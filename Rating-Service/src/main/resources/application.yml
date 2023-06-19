@@ -1,0 +1,31 @@
+server:
+  port: 9093
+
+spring:
+  application:
+    name: RATING-SERVICE
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: microservices_t1
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:9094/eureka
+
+# Okta security conf
+okta:
+  oauth2:
+    issuer: https://dev-39211336.okta.com/oauth2/default	
+    audience: api://default
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+

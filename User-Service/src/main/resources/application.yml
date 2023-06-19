@@ -1,0 +1,94 @@
+server:
+  port: 9091
+
+## database configuration
+spring:
+  application:
+    name: USER-SERVICE
+  profiles:
+    active: prod
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/microservices_t1
+    username: root
+    password: 3333
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  config:
+    import: configserver:http://localhost:9096
+
+#Client security conf
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri:  https://dev-39211336.okta.com/oauth2/default
+      client:
+        registration:
+          my-internal-client:
+            provider: okta
+            authorization-grant-type: client_credentials
+            scope: internal
+            client-id: 0oaa0q95z6269knER5d7
+            client-secret: BJhT4UUeythaKcAzWJOoaq_Kv82E__zGCF3cKk3I
+        provider:
+          okta:
+            issuer-uri:  https://dev-39211336.okta.com/oauth2/default
+
+## Actuator conf
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+ ## Circuitbreaker conf
+resilience4j:
+  circuitbreaker:
+    instances:
+      ratingHotelBreaker:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 6s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+  retry:
+    instances:
+      ratingHotelService:
+        max-attempts: 3
+        wait-duration: 1s
+
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        limit-refresh-period: 4s
+        limit-for-period: 2
+        timeout-duration: 2s
+
+# server secuirity conf
+okta:
+  oauth2:
+    issuer: https://dev-39211336.okta.com/oauth2/default	
+    audience: api://default
+
+
+mvc:
+  pathmatch:
+    matching-strategy: ANT_PATH_MATCHER

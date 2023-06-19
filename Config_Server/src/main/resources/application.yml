@@ -1,0 +1,22 @@
+server:
+  port: 9096
+  
+spring:
+  application:
+    name: CONFIG-SERVER
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/rajvirDobariya/microeservice-durgesh-config
+          clone-on-start: true
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:9094/eureka
+          

@@ -1,0 +1,10 @@
+server:
+  port: 9094 
+
+# This configuration for stop self register or not be a self client
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
